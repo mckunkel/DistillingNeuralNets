@@ -3,7 +3,15 @@ Gets downloads a list of URLs for the names stored in "animals",
 then calls a bash script to do the actual downloading
 '''
 import re, sys, os, subprocess
-import urllib
+#import urllib
+if sys.version_info[0] >= 3:
+    import urllib.request as urllib
+else:
+    # Not Python 3 - today, it is most likely to be Python 2
+    # But note that this might need an update when Python 4
+    # might be around one day
+    import urllib
+
 
 class_names = sys.argv[1:]
 print(class_names)
@@ -39,7 +47,7 @@ def get_urls(wnid,name):
         new_dir("URL_lists")
         image_locations_url="http://image-net.org/api/text/imagenet.synset.geturls?wnid="+wnid
         urllib.urlretrieve(image_locations_url,save_path)
-    
+
     urls = open(save_path,"r").readlines()
     urls = [re.sub("\n","",u) for u in urls]
     urls = [re.sub("\r","",u) for u in urls]
@@ -55,3 +63,8 @@ for name in class_names:
             url = next(url_gen)
             save_path="data/{}/{}/{}{:05d}.jpg".format(case,name,name,i)
             subprocess.call(["./Downloader.sh",url,save_path])
+
+
+
+#if __name__ == '__main__':
+#adding come comments to check if on dev or master
